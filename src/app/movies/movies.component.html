@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="loader" *ngIf="pending"></div>
+  <div class="row">
+    <div class="col-xs-12">
+             
+        <div class="container" id="search-block">
+            <div class="row">                
+                <a id="add-new-btn" class="btn btn-success pull-right" href="#" role="button" [routerLink]="['/movie', 'new_movie']">Add New Movie</a>
+                <button class="btn btn-default pull-right" href="#" role="button" (click)="showAll()">Show All</button>
+                  <div class="col-md-5 col-xs-12 pull-right">
+                      <div class="input-group col-md-12 search-input">
+                          <input type="text" class="form-control" placeholder="Search..." #searchF />
+                          <span class="input-group-btn">
+                              <button class="btn btn-lg" type="button" (click)="search(searchF.value)">
+                                  <i class="glyphicon glyphicon-search"></i>
+                              </button>
+                          </span>
+                      </div>
+                  </div>                  
+                  
+                  
+            </div>
+          </div>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Movie Id</th>
+            <th>Name</th>
+            <th>Release Date</th>
+            <th>Release Contry</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let movie of movies" [routerLink]="removeMode ? null : ['/movie', movie.imdbId]" class="clickable">
+            <td>{{movie.imdbId}}</td>
+            <td>{{movie.title | shorten}}</td>
+            <td>{{movie.releaseDate | date}}</td>
+            <td>{{movie.releaseCountry}}</td>
+            <td (mouseenter)="removeMode = true" (mouseleave)="removeMode = false"><span class="glyphicon glyphicon-remove-circle" (click)="removeMovie(movie)"></span></td>
+          </tr>
+      </table>
+    </div>
+  </div>
+</div>

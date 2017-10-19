@@ -1,0 +1,32 @@
+.clickable {
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.6;
+    }
+}
+.glyphicon {
+    color: #cccccc;
+    font-size: 20px;
+    z-index: 10000;
+}
+.loader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgb(255, 255, 255);
+    opacity: 0.7;
+    z-index: 9999;
+
+    &:before {
+        content:  url(assets/loader.gif);
+        display: block;        
+        text-align: center;
+        position: relative;
+        margin: 10% auto;
+    }
+}
+
+

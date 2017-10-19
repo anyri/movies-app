@@ -1,0 +1,54 @@
+<h4>{{ isEditMode? 'Edit Movie' : 'Add New Movie'}} {{movie.title}}</h4>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-5">
+
+      <form #editMovieForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group" [hidden]="!isEditMode">
+          <label for="imdbId">Id:</label>
+          <input type="text" class="form-control" id="imdbId" placeholder="{{movie.imdbId}}" name="title" [readonly]="isEditMode">
+        </div>
+        <div class="form-group">
+          <label for="title">Title:</label>
+          <input type="text" class="form-control" id="title" placeholder="{{movie.title}}" [(ngModel)]="movie.title" required #title="ngModel"
+            name="title">
+          <div *ngIf="title.errors && (title.dirty || title.touched)" class="alert alert-danger">
+            <div [hidden]="!title.errors.required">
+              Required field
+            </div>           
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="releaseDate">Release Date:</label>
+          <input type="date" class="form-control" id="releaseDate" placeholder="{{movie.releaseDate}}" [(ngModel)]="movie.releaseDate"
+            required #releaseDate="ngModel" name="releaseDate">
+          <div *ngIf="releaseDate.errors && (releaseDate.dirty || releaseDate.touched)" class="alert alert-danger">
+            <div [hidden]="!releaseDate.errors.required">
+              Required field
+            </div>
+            <div [hidden]="!releaseDate.errors.minlength">
+              Minimum 4 symbols
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="releaseCountry">Release Country:</label>
+          <input type="text" class="form-control" id="releaseCountry" placeholder="{{movie.releaseCountry}}" [(ngModel)]="movie.releaseCountry"
+            required #releaseCountry="ngModel" name="releaseCountry" minlength="3">
+          <div *ngIf="releaseCountry.errors && (releaseCountry.dirty || releaseCountry.touched)" class="alert alert-danger">
+            <div [hidden]="!releaseCountry.errors.required">
+              Required field
+            </div>
+            <div [hidden]="!releaseCountry.errors.minlength">
+              Minimum 3 symbols
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!editMovieForm.form.valid">{{ isEditMode ? 'Update' : 'Save'}}</button>
+        <button type="button" class="btn btn-default" [routerLink]="['/']">Cancel</button>
+      </form>
+
+    </div>
+  </div>
+</div>
