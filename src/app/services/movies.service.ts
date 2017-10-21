@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Movie } from '../movies/movie.model';
+import { DateFormatHelper } from '../helpers/date-format.helper';
 
 @Injectable()
 export class MoviesService {
@@ -22,7 +23,7 @@ export class MoviesService {
     value.toLowerCase();
 
     output = output.filter(movie =>
-      movie['title'].toLowerCase().indexOf(value) >= 0 || movie['imdbId'].toLowerCase().indexOf(value) >= 0 || movie['releaseDate'].toLowerCase().indexOf(value) >= 0 || movie['releaseCountry'].toLowerCase().indexOf(value) >= 0);
+      movie['title'].toLowerCase().indexOf(value) >= 0 || movie['imdbId'].toLowerCase().indexOf(value) >= 0 || DateFormatHelper.format(movie['releaseDate']).indexOf(value) >= 0 || movie['releaseCountry'].toLowerCase().indexOf(value) >= 0);
 
     return Observable.of(output);
   }

@@ -9,18 +9,16 @@
                 <button class="btn btn-default pull-right" href="#" role="button" (click)="showAll()">Show All</button>
                   <div class="col-md-5 col-xs-12 pull-right">
                       <div class="input-group col-md-12 search-input">
-                          <input type="text" class="form-control" placeholder="Search..." #searchF />
+                          <input type="text" class="form-control" placeholder="Search..." #searchF (input)="onChange($event.target.value)" />
                           <span class="input-group-btn">
                               <button class="btn btn-lg" type="button" (click)="search(searchF.value)">
                                   <i class="glyphicon glyphicon-search"></i>
                               </button>
                           </span>
                       </div>
-                  </div>                  
-                  
-                  
+                  </div>
             </div>
-          </div>
+       </div>
 
       <table class="table table-striped">
         <thead>
@@ -35,10 +33,10 @@
         <tbody>
           <tr *ngFor="let movie of movies" [routerLink]="removeMode ? null : ['/movie', movie.imdbId]" class="clickable">
             <td>{{movie.imdbId}}</td>
-            <td>{{movie.title | shorten}}</td>
-            <td>{{movie.releaseDate | date}}</td>
+            <td>{{movie.title | shorten : '15'}}</td>
+            <td>{{movie.releaseDate | dateFormat}}</td>
             <td>{{movie.releaseCountry}}</td>
-            <td (mouseenter)="removeMode = true" (mouseleave)="removeMode = false"><span class="glyphicon glyphicon-remove-circle" (click)="removeMovie(movie)"></span></td>
+            <td (mouseenter)="removeMode = true" (mouseleave)="removeMode = false"><span class="glyphicon glyphicon-remove-circle" (click)="confirmRemove(movie)"></span></td>
           </tr>
       </table>
     </div>

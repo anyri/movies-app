@@ -14,6 +14,16 @@ export class CreateUpdateMovieComponent implements OnInit {
   subscription: Subscription;
   movie: Movie = new Movie();
   isEditMode: boolean = true;
+  isCorrectDate: boolean = true;
+  _bsValue: Date;
+  
+  get bsValue(): Date {
+    return this._bsValue;
+  }
+ 
+  set bsValue(v: Date) {    
+    this._bsValue = v;
+  }
 
   constructor(private moviesService: MoviesService, private route: ActivatedRoute, private router: Router) { }
 
@@ -21,10 +31,12 @@ export class CreateUpdateMovieComponent implements OnInit {
     this.subscription = this.route.params.subscribe(params => {
       let id = params['id'];
 
-      if (id !== 'new_movie')
+      if (id !== 'new_movie') {
         this.getMovie(id);
-      else
+
+      } else {
         this.isEditMode = false;
+      }
     });
   }
 
@@ -32,6 +44,7 @@ export class CreateUpdateMovieComponent implements OnInit {
     this.subscription = this.moviesService.getMovie(id).subscribe(
       data => {
         this.movie = new Movie(data);
+        this.bsValue = new Date(this.movie.releaseDate);
         this.subscription.unsubscribe();
       },
       error => {
@@ -41,23 +54,24 @@ export class CreateUpdateMovieComponent implements OnInit {
     )
   }
 
+  onChange(val) {
+      let pattern = /(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/(19|20)\d\d/;
+      this.isCorrectDate = val.search(pattern) == -1 ? false : true;
+  }
+
   onSubmit() {
     if (this.isEditMode)
       this.upadteMovie(this.movie);
     else
       this.addMovie(this.movie);
-
   }
 
   private upadteMovie(movie) {
-     
-    console.log("To update " + JSON.stringify(movie));
 
     this.subscription = this.moviesService.updateMovie(movie).subscribe(
       data => {
-        console.log(data);
-        this.router.navigate(['/']);
         this.subscription.unsubscribe();
+        this.router.navigate(['/']);        
       },
       error => {
         console.log("Error update");
@@ -68,7 +82,6 @@ export class CreateUpdateMovieComponent implements OnInit {
 
   private addMovie(movie: Movie) {
     movie = this.setMovieProperties(movie);
-    console.log("Add new movie " + JSON.stringify(movie));
 
     this.subscription = this.moviesService.addMovie(movie).subscribe(
       data => {
@@ -90,6 +103,5 @@ export class CreateUpdateMovieComponent implements OnInit {
     movie.releaseDay = +date.getDate();
     return movie;
   }
-
 
 }

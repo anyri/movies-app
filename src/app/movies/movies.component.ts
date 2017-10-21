@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 import { MoviesService } from '../services/movies.service';
 import { Movie } from './movie.model';
+import { ConfirmContentComponent } from '../confirmation/confirm.content.component';
 
 @Component({
   selector: 'app-movies',
@@ -14,8 +17,9 @@ export class MoviesComponent implements OnInit {
   pending: boolean;
   movies: Movie[];
   removeMode: boolean = false;
+  bsModalRef: BsModalRef;
 
-  constructor(private moviesService: MoviesService, private router: Router) {
+  constructor(private moviesService: MoviesService, private router: Router, private modalService: BsModalService) {
     this.pending = true;
    }
 
@@ -50,7 +54,34 @@ export class MoviesComponent implements OnInit {
     });
 
   }
+  onChange(val) {
+    if(val)
+      this.search(val);
+    else
+      this.showAll();
+  }
 
+  confirmRemove(movie: Movie) {
+  
+    this.bsModalRef = this.modalService.show(ConfirmContentComponent);
+    this.bsModalRef.content.title = `Are you sure, that you want to delete the movie "${movie.title}"?`
+
+    let subsribeOnHide: Subscription = this.modalService.onHide.subscribe(
+      result => {
+        console.log(`Del movie = ${movie.title}`)
+        if (this.bsModalRef.content.confirm) {         
+          this.removeMovie(movie);
+        }
+        subsribeOnHide.unsubscribe();
+      },
+      error => {
+        console.log("Confirm remove error");
+        subsribeOnHide.unsubscribe();
+      }
+    )
+
+  }
+  
   removeMovie(movie: Movie) {
     let id = movie.imdbId;
     
