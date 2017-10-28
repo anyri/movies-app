@@ -5,11 +5,14 @@ import { FormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { AlertModule } from 'ngx-bootstrap/alert';
 
 import { APP_ROUTES } from './app.routes';
 import { MoviesService } from './services/movies.service';
 import { ShortenPipe } from './shorten.pipe';
 import { DateFormat } from './date.pipe';
+import { MatchPipe } from './match.pipe';
+import { OrderByPipe } from './orderBy.pipe';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -27,7 +30,9 @@ import { ConfirmContentComponent } from './confirmation/confirm.content.componen
     ErrorPageComponent,
     ShortenPipe,
     DateFormat,
-    ConfirmContentComponent
+    MatchPipe,
+    OrderByPipe,
+    ConfirmContentComponent,
   ],
   entryComponents:[ConfirmContentComponent],
   imports: [
@@ -36,7 +41,8 @@ import { ConfirmContentComponent } from './confirmation/confirm.content.componen
     FormsModule,
     RouterModule.forRoot(APP_ROUTES),
     BsDatepickerModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    AlertModule.forRoot()
   ],
   providers: [MoviesService],
   bootstrap: [AppComponent]

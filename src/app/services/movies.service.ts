@@ -10,7 +10,6 @@ import { DateFormatHelper } from '../helpers/date-format.helper';
 export class MoviesService {
   webApi: string = 'http://movies-db.herokuapp.com/api/movies/';
   moviesSource: Movie[];
-  searchFields = ['imdbId', 'title', 'releaseDate', 'releaseCountry'];
 
   constructor(private http: Http) { }
 
@@ -22,8 +21,11 @@ export class MoviesService {
 
     value.toLowerCase();
 
-    output = output.filter(movie =>
-      movie['title'].toLowerCase().indexOf(value) >= 0 || movie['imdbId'].toLowerCase().indexOf(value) >= 0 || DateFormatHelper.format(movie['releaseDate']).indexOf(value) >= 0 || movie['releaseCountry'].toLowerCase().indexOf(value) >= 0);
+    /* output = output.filter(movie =>
+      movie['title'].toLowerCase().indexOf(value) >= 0 || movie['imdbId'].toLowerCase().indexOf(value) >= 0 || DateFormatHelper.format(movie['releaseDate']).indexOf(value) >= 0 || movie['releaseCountry'].toLowerCase().indexOf(value) >= 0); */
+
+    const searchFields = ['imdbId', 'title', 'releaseDate', 'releaseCountry'];
+    output = output.filter(movie => searchFields.some(sf => movie[sf].toLowerCase().indexOf(value.toLowerCase()) >= 0));
 
     return Observable.of(output);
   }
@@ -31,7 +33,7 @@ export class MoviesService {
   getMovies() {
     return this.http.get(this.webApi)
       .map(result => result.json() || [])
-      .catch(error => Observable.throw(error.json().error || 'Server error'))
+      .catch(error => Observable.throw(error.json().error || 'Server error'));
   }
 
   getMovie(id: string) {
@@ -39,7 +41,7 @@ export class MoviesService {
       .map(res => res.json())
       .catch(error =>
         Observable.throw(error.json().error || 'Server error')
-      )
+      );
   }
 
   addMovie(movie: Movie) {
@@ -47,7 +49,7 @@ export class MoviesService {
       .map(res => res.json())
       .catch(error =>
         Observable.throw(error.json().error || 'Server error')
-      )
+      );
   }
 
   updateMovie(movie) {

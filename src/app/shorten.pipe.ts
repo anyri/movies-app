@@ -11,7 +11,7 @@ export class ShortenPipe implements PipeTransform {
         if (value.length > cutTo) {
             if (value.split(' ').length > 1) {
                 let str = value.substr(cutTo, value.length);
-                let isSpace = str.indexOf(" ") == -1 ? false : true;
+                let isSpace = str.indexOf(" ") !== -1;
                 let end = cutTo + ( isSpace ? str.indexOf(" ") : value.length );
 
                 return value.substr(0, end) + (isSpace ? "..." : "");

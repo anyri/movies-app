@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -15,24 +15,31 @@ import { ConfirmContentComponent } from '../confirmation/confirm.content.compone
 export class MoviesComponent implements OnInit {
   subscription: Subscription;
   pending: boolean;
-  movies: Movie[];
+  movies: Movie[] = [];
   removeMode: boolean = false;
   bsModalRef: BsModalRef;
+  @ViewChild('searchF') searchF: ElementRef;
+  order: string;
+  direction: string;
 
   constructor(private moviesService: MoviesService, private router: Router, private modalService: BsModalService) {
     this.pending = true;
+    this.order = 'title';
+    this.direction = 'asc';
    }
 
   ngOnInit() {
     this.subscription = this.moviesService.getMovies().subscribe(
-      data => {        
-        this.movies = data;
+      data => { 
+        this.movies = data;        
         this.pending = false;
+
         this.moviesService.moviesSource = this.movies.map(movie => {
           let clone = Object.assign({}, movie);
           return clone;
         });
-        this.subscription.unsubscribe();
+
+        this.subscription.unsubscribe();        
       },
       error => this.router.navigate(['error/bad_request'])
     )
@@ -52,8 +59,25 @@ export class MoviesComponent implements OnInit {
       let clone = Object.assign({}, movie);
       return clone;
     });
-
+    this.searchF.nativeElement.value = "";
   }
+
+  orderBy(order: string) {
+    this.order = order;
+    if(this.direction == 'asc')
+      this.direction ='desc';
+    else
+      this.direction ='asc';
+  }
+  
+  checkOrder(orderBy: string, direction: string) {
+    if (this.order != orderBy && !direction)
+      return true;
+    if (this.order == orderBy && this.direction == direction)
+      return true;
+    return false;
+  }
+
   onChange(val) {
     if(val)
       this.search(val);

@@ -1,6 +1,7 @@
 <h4>{{ isEditMode? 'Edit ' : 'Add New Movie'}} {{movie.title}}</h4>
 
 <div class="container">
+  <div class="loader" *ngIf="pending"></div>
   <div class="row">
     <div class="col-sm-12 col-md-5">
 
@@ -50,6 +51,9 @@
         <button type="button" class="btn btn-default" [routerLink]="['/']">Cancel</button>
       </form>
 
+    </div>
+    <div class="col-sm-12 col-md-5">
+        <alert [type]="alert.type" >{{ alert.message }}</alert>
     </div>
   </div>
 </div>

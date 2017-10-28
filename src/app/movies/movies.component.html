@@ -2,43 +2,76 @@
   <div class="loader" *ngIf="pending"></div>
   <div class="row">
     <div class="col-xs-12">
-             
-        <div class="container" id="search-block">
-            <div class="row">                
-                <a id="add-new-btn" class="btn btn-success pull-right" href="#" role="button" [routerLink]="['/movie', 'new_movie']">Add New Movie</a>
-                <button class="btn btn-default pull-right" href="#" role="button" (click)="showAll()">Show All</button>
-                  <div class="col-md-5 col-xs-12 pull-right">
-                      <div class="input-group col-md-12 search-input">
-                          <input type="text" class="form-control" placeholder="Search..." #searchF (input)="onChange($event.target.value)" />
-                          <span class="input-group-btn">
+
+      <div class="container" id="search-block">
+        <div class="row">
+            <div class="form-group col-md-3 col-xs-12" id="orderBy">
+                Order by:
+                  <select id="orderBy" [(ngModel)]="order" class="form-control">
+                    <option value="title">Title</option>
+                    <option value="releaseCountry">Country</option>
+                    <option value="releaseDate">Date</option>             
+                  </select>                 
+            </div>          
+          
+          <!-- search -->
+          <div class="col-md-5 col-xs-12">
+            <div class="input-group col-md-12 search-input">
+              <input type="text" class="form-control" placeholder="Search..." #searchF (input)="onChange($event.target.value)" />
+              <!--  -->
+              <span class="input-group-btn">
                               <button class="btn btn-lg" type="button" (click)="search(searchF.value)">
                                   <i class="glyphicon glyphicon-search"></i>
                               </button>
                           </span>
-                      </div>
-                  </div>
             </div>
-       </div>
+          </div>
+          <!-- end search -->
+          <button class="btn btn-default col-md-1 col-xs-12" href="#" role="button" (click)="showAll()">Show All</button>
+          <a id="add-new-btn" class="btn btn-success col-md-2 col-xs-12" href="#" role="button" [routerLink]="['/movie', 'new_movie']">Add New Movie</a>
+        </div>
+      </div>
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Movie Id</th>
-            <th>Name</th>
-            <th>Release Date</th>
-            <th>Release Contry</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let movie of movies" [routerLink]="removeMode ? null : ['/movie', movie.imdbId]" class="clickable">
-            <td>{{movie.imdbId}}</td>
-            <td>{{movie.title | shorten : '15'}}</td>
-            <td>{{movie.releaseDate | dateFormat}}</td>
-            <td>{{movie.releaseCountry}}</td>
-            <td (mouseenter)="removeMode = true" (mouseleave)="removeMode = false"><span class="glyphicon glyphicon-remove-circle" (click)="confirmRemove(movie)"></span></td>
-          </tr>
-      </table>
+      <!-- Table -->
+      <div class="div-table">
+        <div class="t-header t-row">
+          <div class="col-md-6 col-sm-7">
+            <div class="col-md-3 col-sm-12">Movie Id</div>
+            <div class="col-md-9 col-sm-12 clickable" (click)="orderBy('title')">Title <span class="glyphicon order-icons" [ngClass]="{'glyphicon-sort' : checkOrder('title', ''),'glyphicon-arrow-up' : checkOrder('title', 'asc'), 'glyphicon-arrow-down' : checkOrder('title', 'desc') }"></span></div>
+          </div>
+          <div class="col-md-5 col-sm-4">
+            <div class="col-md-6 col-sm-12">Release Date</div>
+            <div class="col-md-6 col-sm-12">Release Contry</div>
+          </div>
+          <div class="col-md-1 col-sm-1s actions-block">
+
+          </div>
+        </div>
+        <div class="t-row clickable" *ngFor="let movie of movies | orderBy : order : direction; let i = index" [class.bg-row]="i % 2 != 0">
+          <div [routerLink]="['/movie', movie.imdbId]">
+            <div class="col-md-6 col-sm-7">
+              <div class="col-md-3 col-sm-12">{{movie.imdbId}}</div>
+              <div class="col-md-9 col-sm-12"><span [outerHTML]="movie.title | shorten : '15' | match: searchF.value"></span></div>
+            </div>
+            <div class="col-md-5 col-sm-4">
+              <div class="col-md-6 col-sm-12">{{movie.releaseDate | dateFormat}}</div>
+              <div class="col-md-6 col-sm-12">{{movie.releaseCountry}}</div>
+            </div>
+          </div>
+          <div class="col-md-1 col-sm-1s actions-block">
+            <span class="glyphicon glyphicon-remove-circle" (click)="confirmRemove(movie)"></span>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+      <!-- Table -->
+
+
+
     </div>
   </div>
 </div>

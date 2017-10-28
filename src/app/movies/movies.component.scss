@@ -1,5 +1,18 @@
 #add-new-btn {
-    margin: 0 20px;
+    margin: 0 0 0 20px;
+}
+#orderBy {
+    line-height: 2.3em;
+
+    .form-control {
+        width: 76% !important;
+        float: right;
+    }
+}
+.order-icons {
+    font-size: 13px !important;
+    color: white !important;
+    margin-left: 5px !important;
 }
 #search-block {
     margin: 20px 0 30px 0;

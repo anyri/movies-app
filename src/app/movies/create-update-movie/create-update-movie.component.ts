@@ -4,6 +4,8 @@ import { Subscription } from "rxjs/Rx";
 import { Router } from '@angular/router';
 import { MoviesService } from '../../services/movies.service';
 import { Movie } from '../movie.model';
+import { Notification } from '../../notification/notification.model';
+import { NotificationMessages } from '../../notification/notification.messages';
 
 @Component({
   selector: 'app-create-update-movie',
@@ -15,7 +17,9 @@ export class CreateUpdateMovieComponent implements OnInit {
   movie: Movie = new Movie();
   isEditMode: boolean = true;
   isCorrectDate: boolean = true;
+  pending: boolean;
   _bsValue: Date;
+  alert: Notification = new Notification();
   
   get bsValue(): Date {
     return this._bsValue;
@@ -32,8 +36,8 @@ export class CreateUpdateMovieComponent implements OnInit {
       let id = params['id'];
 
       if (id !== 'new_movie') {
+        this.pending = true;
         this.getMovie(id);
-
       } else {
         this.isEditMode = false;
       }
@@ -45,6 +49,7 @@ export class CreateUpdateMovieComponent implements OnInit {
       data => {
         this.movie = new Movie(data);
         this.bsValue = new Date(this.movie.releaseDate);
+        this.pending = false;
         this.subscription.unsubscribe();
       },
       error => {
@@ -60,6 +65,8 @@ export class CreateUpdateMovieComponent implements OnInit {
   }
 
   onSubmit() {
+    this.pending = true;
+
     if (this.isEditMode)
       this.upadteMovie(this.movie);
     else
@@ -67,15 +74,17 @@ export class CreateUpdateMovieComponent implements OnInit {
   }
 
   private upadteMovie(movie) {
-
     this.subscription = this.moviesService.updateMovie(movie).subscribe(
       data => {
+        this.pending = false;        
+        this.alert = new Notification(NotificationMessages.SUCCESS_UPDATE);
         this.subscription.unsubscribe();
-        this.router.navigate(['/']);        
+        setTimeout(() => this.router.navigate(['/']), 2000);        
       },
       error => {
-        console.log("Error update");
-        this.subscription.unsubscribe();
+        this.pending = false;        
+        this.alert = new Notification(NotificationMessages.ERROR_UPDATE);
+        this.subscription.unsubscribe();        
       }
     )
   }
@@ -85,12 +94,14 @@ export class CreateUpdateMovieComponent implements OnInit {
 
     this.subscription = this.moviesService.addMovie(movie).subscribe(
       data => {
-        console.log("OK 200");
-        this.router.navigate(['/']);
+        this.pending = false;
         this.subscription.unsubscribe();
+        this.alert = new Notification(NotificationMessages.SUCCESS_CREATE);
+        setTimeout(() => this.router.navigate(['/']), 2200);        
       },
       error => {
-        console.log("Error update");
+        this.pending = false;
+        this.alert = new Notification(NotificationMessages.ERROR_CREATE);
         this.subscription.unsubscribe();        
       }
     )
